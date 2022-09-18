@@ -1,10 +1,10 @@
 [![template](https://img.shields.io/badge/Repository-template-darkred)](https://github.com/Nakama3942/template_rep)
 [![GitHub license](https://img.shields.io/github/license/Nakama3942/Dox-docs_Translator?color=gold&style=flat-square)](https://github.com/Nakama3942/Dox-docs_Translator/blob/main/LICENSE)
 
-<!--[![CHANGELOG](https://img.shields.io/badge/here-CHANGELOG-yellow)](https://github.com/Nakama3942/template_rep/blob/main/CHANGELOG.md)-->
-<!--[![CONTRIBUTING](https://img.shields.io/badge/here-CONTRIBUTING-indigo)](https://github.com/Nakama3942/template_rep/blob/main/CONTRIBUTING.md)-->
-<!--[![CODE_OF_CONDUCT](https://img.shields.io/badge/here-CODE_OF_CONDUCT-darkgreen)](https://github.com/Nakama3942/template_rep/blob/main/CODE_OF_CONDUCT.md)-->
-<!--[![PULL_REQUEST_TEMPLATE](https://img.shields.io/badge/here-PULL_REQUEST_TEMPLATE-orange)](https://github.com/Nakama3942/template_rep/blob/main/.github/PULL_REQUEST_TEMPLATE.md)-->
+[![CHANGELOG](https://img.shields.io/badge/here-CHANGELOG-yellow)](https://github.com/Nakama3942/Dox-docs_Translator/blob/main/CHANGELOG.md)
+[![CONTRIBUTING](https://img.shields.io/badge/here-CONTRIBUTING-indigo)](https://github.com/Nakama3942/Dox-docs_Translator/blob/main/CONTRIBUTING.md)
+[![CODE_OF_CONDUCT](https://img.shields.io/badge/here-CODE_OF_CONDUCT-darkgreen)](https://github.com/Nakama3942/Dox-docs_Translator/blob/main/CODE_OF_CONDUCT.md)
+[![PULL_REQUEST_TEMPLATE](https://img.shields.io/badge/here-PULL_REQUEST_TEMPLATE-orange)](https://github.com/Nakama3942/Dox-docs_Translator/blob/main/.github/PULL_REQUEST_TEMPLATE.md)
 
 # Dox-docs_Translator
 ## Overview
