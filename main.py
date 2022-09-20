@@ -1,6 +1,9 @@
 from googletrans import Translator
 
 
+# Core functional
+
+
 def get_doc(name_file: str) -> str:
     """A method that retrieves the documentation text from the given file."""
     input_doc = open(name_file, 'r', encoding='utf-8')
@@ -14,15 +17,16 @@ def optimize_origin_doc(doc: str) -> str:
     doc = doc.replace("\n\t\t\t   ", " ")
     doc = doc.replace("\n\t\t   ", " ")
     doc = doc.replace("\n\t   ", " ")
-    doc = doc.replace("\n\t\t\t */", " */")
-    doc = doc.replace("\n\t\t */", " */")
-    doc = doc.replace("\n\t */", " */")
+    doc = doc.replace("\n\t  ", " ")
+    doc = doc.replace("\n   ", " ")
+    doc = doc.replace("\n  ", " ")
+    doc = doc.replace("\n\t\t\t */", "\n*/").replace("\n\t\t */", "\n*/").replace("\n\t\t*/", "\n*/").replace("\n\t */", "\n*/").replace("\n */", "\n*/")
     return doc
 
 
 def split_doc(doc: str) -> list[str]:
     """Divides the given documentation into parts."""
-    doc_split = doc.replace("\n\t\t\t/*! ", "\n\t\t/*! ").replace("\n\t/*! ", "\n\t\t/*! ").split(sep="\n\t\t/*! ")
+    doc_split = doc.replace("\n\t\t\t/*! ", "\n\t\t/*! ").replace("\n\t/*! ", "\n\t\t/*! ").replace("\n/*! ", "\n\t\t/*! ").split(sep="\n\t\t/*! ")
     print(len(doc_split))
     return doc_split
 
@@ -44,7 +48,7 @@ def translate_docs(origin_docs: list[str], from_lang: str, to_lang: str) -> list
 
 def join_docs(translated_docs: list[str]) -> str:
     """Combines the translated parts into a single text."""
-    return "\n".join(translated_docs)
+    return "".join(translated_docs)
 
 
 def optimize_translated_doc(doc: str) -> str:
@@ -63,11 +67,38 @@ def save_doc(doc: str, name_file: str):
     output_doc.close()
 
 
+# New functional
+
+
+dox_tags = {'\\namespace': '$!$ \\namespace $!$', '\\brief': '$!$ \\brief $!$', '\\details': '$!$ \\details $!$', '\\note': '$!$ \\note $!$', '\\since': '$!$ \\since $!$', '\\author': '$!$ \\author $!$', '\\version': '$!$ \\version $!$', '\\copyright': '$!$ \\copyright $!$', '\\todo': '$!$ \\todo $!$', '\\example': '$!$ \\example $!$', '\\typedef': '$!$ \\typedef $!$', '\\attention': '$!$ \\attention $!$', '\\fn': '$!$ \\fn $!$', '\\tparam': '$!$ \\tparam $!$', '\\param': '$!$ \\param $!$', '\\test ': '', '\\snippet': '$!$ \\snippet $!$', '\\return': '$!$ \\return $!$', '\\sa': '$!$ \\sa $!$', '\\remark': '$!$ \\remark $!$', '\\retval': '$!$ \\retval $!$', '\\struct': '$!$ \\struct $!$', '\\var': '$!$ \\var $!$', '\\throw': '$!$ \\throw $!$', '\\interface': '$!$ \\interface $!$', '\\warning': '$!$ \\warning $!$', '\\class': '$!$ \\class $!$', '\\par': '$!$ \\par $!$', '\\deprecated': '$!$ \\deprecated $!$', '\\code{.cpp}': '$!$ \\code{.cpp} $!$', '\\endcode': '$!$ \\endcode $!$', '\\enum': '$!$ \\enum $!$', '\\bug': '$!$ \\bug $!$', '/*!': '$!$ /*! $!$', '\n*/': ' $!$ */ $!$'}
+
+
+def test_tags(doc: str) -> str:
+    for item in dox_tags.keys():
+        doc = doc.replace(item, dox_tags[item])
+    return doc
+
+
+# Script
+
+
 if __name__ == '__main__':
     ua_doc = get_doc('DOCUMENTATION.ua.dox')
     ua_doc = optimize_origin_doc(ua_doc)
-    ua_doc_split = split_doc(ua_doc)
-    en_doc_split = translate_docs(ua_doc_split, 'uk', 'en')
-    en_doc = join_docs(en_doc_split)
-    en_doc = optimize_translated_doc(en_doc)
-    save_doc(en_doc, 'DOCUMENTATION.en.dox')
+
+    ua_doc = test_tags(ua_doc)
+
+    # ua_doc_split = split_doc(ua_doc)
+    # ua_doc = join_docs(ua_doc_split)
+
+    save_doc(ua_doc, 'DOCUMENTATION.test.dox')
+
+
+# if __name__ == '__main__':
+#     ua_doc = get_doc('DOCUMENTATION.ua.dox')
+#     ua_doc = optimize_origin_doc(ua_doc)
+#     ua_doc_split = split_doc(ua_doc)
+#     en_doc_split = translate_docs(ua_doc_split, 'uk', 'en')
+#     en_doc = join_docs(en_doc_split)
+#     en_doc = optimize_translated_doc(en_doc)
+#     save_doc(en_doc, 'DOCUMENTATION.en.dox')
