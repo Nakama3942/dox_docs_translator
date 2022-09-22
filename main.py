@@ -51,19 +51,19 @@ def split_doc(doc: str) -> list[str]:
     return doc_split
 
 
-def translate_docs(origin_docs: list[str], from_lang: str, to_lang: str) -> list[str]:
-    """Translates parts of the documentation that are less than 5000 characters."""
-    translator = Translator()
-    count = 0
-    translate_docs: list[str] = []
-    for item in origin_docs:
-        count += 1
-        if len(item) < 5000:
-            translate_docs.append(translator.translate(item, src=from_lang, dest=to_lang).text)
-            print(f"{count} translated")
-        else:
-            print(f"{count} not translated : len(item) in ua_doc_split >= 5000")
-    return translate_docs
+# def translate_docs(origin_docs: list[str], from_lang: str, to_lang: str) -> list[str]:
+#     """Translates parts of the documentation that are less than 5000 characters."""
+#     translator = Translator()
+#     count = 0
+#     translate_docs: list[str] = []
+#     for item in origin_docs:
+#         count += 1
+#         if len(item) < 5000:
+#             translate_docs.append(translator.translate(item, src=from_lang, dest=to_lang).text)
+#             print(f"{count} translated")
+#         else:
+#             print(f"{count} not translated : len(item) in ua_doc_split >= 5000")
+#     return translate_docs
 
 
 def join_docs(translated_docs: list[str]) -> str:
@@ -90,7 +90,8 @@ def save_doc(doc: str, name_file: str):
 # New functional
 
 
-dox_tags = {'\\namespace': '$!$ \\namespace $!$', '\\brief': '$!$ \\brief $!$', '\\details': '$!$ \\details $!$', '\\note': '$!$ \\note $!$', '\\since': '$!$ \\since $!$', '\\author': '$!$ \\author $!$', '\\version': '$!$ \\version $!$', '\\copyright': '$!$ \\copyright $!$', '\\todo': '$!$ \\todo $!$', '\\example': '$!$ \\example $!$', '\\typedef': '$!$ \\typedef $!$', '\\attention': '$!$ \\attention $!$', '\\fn': '$!$ \\fn $!$', '\\tparam': '$!$ \\tparam $!$', '\\param': '$!$ \\param $!$', '\\test ': '', '\\snippet': '$!$ \\snippet $!$', '\\return': '$!$ \\return $!$', '\\sa': '$!$ \\sa $!$', '\\remark': '$!$ \\remark $!$', '\\retval': '$!$ \\retval $!$', '\\struct': '$!$ \\struct $!$', '\\var': '$!$ \\var $!$', '\\throw': '$!$ \\throw $!$', '\\interface': '$!$ \\interface $!$', '\\warning': '$!$ \\warning $!$', '\\class': '$!$ \\class $!$', '\\par': '$!$ \\par $!$', '\\deprecated': '$!$ \\deprecated $!$', '\\code{.cpp}': '$!$ \\code{.cpp} $!$', '\\endcode': '$!$ \\endcode $!$', '\\enum': '$!$ \\enum $!$', '\\bug': '$!$ \\bug $!$', '/*!': '$!$ /*! $!$', '\n*/': ' $!$ */ $!$'}
+dox_tags = {'\\namespace': '$!$ \\namespace $!$', '\\brief': '$!$ \\brief $!$', '\\details': '$!$ \\details $!$', '\\note': '$!$ \\note $!$', '\\since': '$!$ \\since $!$', '\\author': '$!$ \\author $!$', '\\version': '$!$ \\version $!$', '\\copyright': '$!$ \\copyright $!$', '\\todo': '$!$ \\todo $!$', '\\example': '$!$ \\example $!$', '\\typedef': '$!$ \\typedef $!$', '\\attention': '$!$ \\attention $!$', '\\fn': '$!$ \\fn $!$', '\\tparam': '$!$ \\tparam $!$', '\\param': '$!$ \\param $!$', '\\test ': '', '\\snippet': '$!$ \\snippet $!$', '\\return': '$!$ \\return $!$', '\\sa': '$!$ \\sa $!$', '\\remark': '$!$ \\remark $!$', '\\retval': '$!$ \\retval $!$', '\\struct': '$!$ \\struct $!$', '\\var': '$!$ \\var $!$', '\\throw': '$!$ \\throw $!$', '\\interface': '$!$ \\interface $!$', '\\warning': '$!$ \\warning $!$', '\\class': '$!$ \\class $!$', '\\par': '$!$ \\par $!$', '\\deprecated': '$!$ \\deprecated $!$', '\\code{.cpp}': '$!$ \\code{.cpp} $!$', '\\endcode': '$!$ \\endcode $!$', '\\enum': '$!$ \\enum $!$', '\\bug': '$!$ \\bug $!$', '/*!': '$!$ /*!', '\n*/': ' $!$ */ $!$'}
+not_translatable_tags = ['\\namespace', '\\since', '\\author', '\\version', '\\copyright', '\\example', '\\typedef', '\\fn', '\\snippet', '\\sa', '\\struct', '\\var', '\\throw', '\\interface', '\\class', '\\code{.cpp}', '\\endcode', '\\enum']
 
 
 def test_tags(doc: str) -> str:
@@ -99,19 +100,53 @@ def test_tags(doc: str) -> str:
     return doc
 
 
+def test_split(doc: str) -> list[str]:
+    docs_split = doc.split('$!$ ')
+    return docs_split
+
+
+def translate_docs(translatable_docs: str, from_lang: str, to_lang: str) -> str:
+    translator = Translator()
+    if len(translatable_docs) < 5000:
+        translatable_docs = translator.translate(translatable_docs, src=from_lang, dest=to_lang).text
+        print("Sentence translated")
+    else:
+        print("Sentence not translated : len(item) in ua_doc_split >= 5000")
+    return translatable_docs
+
+
+def test_translate(docs: list[str]) -> list[str]:
+    for index in range(len(docs)):
+        for tags in dox_tags.keys():
+            if docs[index][:-1] == tags and tags not in not_translatable_tags:
+                index += 1
+                docs[index] = translate_docs(docs[index], 'uk', 'en') + ' '
+                break
+    return docs
+
+
+def test_join(translated_docs: list[str]) -> str:
+    return "$!$ ".join(translated_docs)
+
+
 # Script
 
 
 if __name__ == '__main__':
-    ua_doc = get_doc('DOCUMENTATION.ua.dox')
+    ua_doc = get_doc('DOCUMENTATION.ua.little.dox')
     ua_doc = optimize_origin_doc(ua_doc)
 
     ua_doc = test_tags(ua_doc)
 
+    ua_doc_split = test_split(ua_doc)
+    en_doc_split = test_translate(ua_doc_split)
+
+    en_doc = test_join(en_doc_split)
+
     # ua_doc_split = split_doc(ua_doc)
     # ua_doc = join_docs(ua_doc_split)
 
-    save_doc(ua_doc, 'DOCUMENTATION.test.dox')
+    save_doc(en_doc, 'DOCUMENTATION.test.dox')
 
 
 # if __name__ == '__main__':
