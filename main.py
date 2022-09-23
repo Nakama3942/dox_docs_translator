@@ -21,4 +21,5 @@
 from dox_docs_translator import *
 
 if __name__ == '__main__':
-    main()
+    doc_translator = DoxDocsTranslator()
+    doc_translator.start_global_translate()

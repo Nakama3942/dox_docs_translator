@@ -22,108 +22,103 @@ from googletrans import Translator
 from tags import *
 
 
-def get_doc(name_file_doc: str) -> str:
-    """A method that retrieves the documentation text from the given file."""
-    try:
-        input_doc = open(name_file_doc, 'r', encoding='utf-8')
-    except FileNotFoundError as error:
-        raise FileNotFoundError(f"File {name_file_doc} not found: " + repr(error))
-    open_doc = input_doc.read()
-    input_doc.close()
-    return open_doc
+class DoxDocsTranslator:
+    def __init__(self, origin_doc_file: str = 'DOCUMENTATION.ua.dox', translated_doc_file: str = 'DOCUMENTATION.en.dox', from_lang: str = 'uk', to_lang: str = 'en'):
+        self.origin_doc_file: str = origin_doc_file
+        self.translated_doc_file: str = translated_doc_file
+        self.from_lang: str = from_lang
+        self.to_lang: str = to_lang
+        self.origin_doc: str = ""
+        self.split_origin_docs: list[str] = []
+        self.split_translated_docs: list[str] = []
+        self.translated_doc: str = ""
 
+    def get_doc(self):
+        """A method that retrieves the documentation text from the given file."""
+        try:
+            input_doc = open(self.origin_doc_file, 'r', encoding='utf-8')
+        except FileNotFoundError as error:
+            raise FileNotFoundError(f"File {self.origin_doc_file} not found: " + repr(error))
+        self.origin_doc = input_doc.read()
+        input_doc.close()
 
-def save_doc(doc: str, name_file_doc: str):
-    """A method that saves the finished text to a file."""
-    output_doc = open(name_file_doc, 'w', encoding='utf-8')
-    output_doc.write(doc)
-    output_doc.close()
+    def save_doc(self):
+        """A method that saves the finished text to a file."""
+        output_doc = open(self.translated_doc_file, 'w', encoding='utf-8')
+        output_doc.write(self.translated_doc)
+        output_doc.close()
 
+    def optimize_doc(self):
+        """A method that brings the style of documentation into a form in which it is better to translate."""
+        for key, value in tabs.items():
+            self.origin_doc = self.origin_doc.replace(key, value)
 
-def optimize_doc(doc: str) -> str:
-    """A method that brings the style of documentation into a form in which it is better to translate."""
-    for key, value in tabs.items():
-        doc = doc.replace(key, value)
-    return doc
+    def restoration_doc(self):
+        """A method that restores the original style of the documentation text."""
+        for key, value in tabs.items():
+            self.translated_doc = self.translated_doc.replace(value, key)
 
+    def tagging(self):
+        """A method that separates documentation tags."""
+        for key, value in dox_tags.items():
+            self.origin_doc = self.origin_doc.replace(key, value)
 
-def restoration_doc(doc: str) -> str:
-    """A method that restores the original style of the documentation text."""
-    for key, value in tabs.items():
-        doc = doc.replace(value, key)
-    return doc
+    def untagging(self):
+        """A method that restores documentation tags."""
+        for key, value in dox_tags.items():
+            self.translated_doc = self.translated_doc.replace(value, key)
 
+    def split_doc(self):
+        """A method that divides the submitted documentation into parts."""
+        self.split_translated_docs = self.split_origin_docs = self.origin_doc.split('$!$ ')
 
-def tagging(doc: str) -> str:
-    """A method that separates documentation tags."""
-    for key, value in dox_tags.items():
-        doc = doc.replace(key, value)
-    return doc
+    def join_docs(self):
+        """A method that combines translated parts into a single text."""
+        self.translated_doc = "$!$ ".join(self.split_translated_docs)
 
+    def translate_doc_segment(self, translatable_docs: str) -> str:
+        """A method that translates parts of the documentation that do not exceed 5000 characters."""
+        translator = Translator()
+        if len(translatable_docs) < 5000:
+            translatable_docs = translator.translate(translatable_docs, self.to_lang, self.from_lang).text
+        else:
+            raise ValueError("len(translatable_docs) in split_origin_docs >= 5000")
+        return translatable_docs
 
-def untagging(doc: str) -> str:
-    """A method that restores documentation tags."""
-    for key, value in dox_tags.items():
-        doc = doc.replace(value, key)
-    return doc
+    def translate_docs(self):
+        """A method that separates parts of the documentation to be translated."""
+        count_of_segment_doc = len(self.split_origin_docs)
+        print(count_of_segment_doc)
+        for index in range(count_of_segment_doc):
+            for tags in dox_tags.keys():
+                if self.split_origin_docs[index][:-1] == tags and tags not in not_translatable_tags:
+                    index += 1
+                    try:
+                        self.split_translated_docs[index] = self.translate_doc_segment(self.split_origin_docs[index]) + ' '
+                        print(f"{index} translated")
+                        print(self.split_translated_docs[index] + '\n')
+                    except ValueError as error:
+                        print(f"{index} not translated : " + repr(error))
+                    break
 
+    def start_global_translate(self) -> bool:
+        """The main translation algorithm."""
+        try:
+            self.get_doc()
+        except FileNotFoundError as error:
+            print(repr(error))
+            return False
 
-def split_doc(doc: str) -> list[str]:
-    """A method that divides the submitted documentation into parts."""
-    docs_split = doc.split('$!$ ')
-    return docs_split
+        self.optimize_doc()
+        self.tagging()
+        self.split_doc()
 
+        self.translate_docs()
 
-def join_docs(translated_docs: list[str]) -> str:
-    """A method that combines translated parts into a single text."""
-    return "$!$ ".join(translated_docs)
+        self.join_docs()
+        self.untagging()
+        self.restoration_doc()
 
+        self.save_doc()
 
-def translate_doc_segment(translatable_docs: str, from_lang: str, to_lang: str) -> str:
-    """A method that translates parts of the documentation that do not exceed 5000 characters."""
-    translator = Translator()
-    if len(translatable_docs) < 5000:
-        translatable_docs = translator.translate(translatable_docs, src=from_lang, dest=to_lang).text
-    else:
-        raise ValueError("len(item) in ua_doc_split >= 5000")
-    return translatable_docs
-
-
-def translate_docs(docs: list[str], from_lang: str, to_lang: str) -> list[str]:
-    """A method that separates parts of the documentation to be translated."""
-    print(len(docs))
-    for index in range(len(docs)):
-        for tags in dox_tags.keys():
-            if docs[index][:-1] == tags and tags not in not_translatable_tags:
-                index += 1
-                try:
-                    docs[index] = translate_doc_segment(docs[index], from_lang, to_lang) + ' '
-                    print(f"{index} translated")
-                    print(docs[index] + '\n')
-                except ValueError as error:
-                    print(f"{index} not translated : " + repr(error))
-                break
-    return docs
-
-
-def main(origin_doc_file: str = 'DOCUMENTATION.ua.dox', translated_doc_file: str = 'DOCUMENTATION.en.dox', from_lang: str = 'uk', to_lang: str = 'en') -> bool:
-    """The main translation algorithm."""
-    try:
-        ua_doc = get_doc(origin_doc_file)
-    except FileNotFoundError as error:
-        print(repr(error))
-        return False
-
-    ua_doc = optimize_doc(ua_doc)
-    ua_doc = tagging(ua_doc)
-    ua_doc_split = split_doc(ua_doc)
-
-    en_doc_split = translate_docs(ua_doc_split, from_lang, to_lang)
-
-    en_doc = join_docs(en_doc_split)
-    en_doc = untagging(en_doc)
-    en_doc = restoration_doc(en_doc)
-
-    save_doc(en_doc, translated_doc_file)
-
-    return True
+        return True
