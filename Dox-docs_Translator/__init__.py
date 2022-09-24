@@ -1,7 +1,7 @@
 # #########################   Dox-docs_Translator   ########################## #
 # ---------------------------------------------------------------------------- #
 #                                                                              #
-# Copyright © 2021-2022 Kalynovsky Valentin. All rights reserved.              #
+# Copyright © 2022 Kalynovsky Valentin. All rights reserved.                   #
 #                                                                              #
 # Licensed under the Apache License, Version 2.0 (the "License");              #
 # you may not use this file except in compliance with the License.             #
@@ -18,8 +18,9 @@
 # ---------------------------------------------------------------------------- #
 # ############################################################################ #
 
-from dox_docs_translator import *
+from .dox_docs_translator import *
+from .tags import *
 
-if __name__ == '__main__':
-    doc_translator = DoxDocsTranslator()
-    doc_translator.start_global_translate()
+__authot__ = "Kalynovsky 'Nakama3942' Valentin"
+__version__ = "0.1.0"
+__email__ = "nakama3942@gmail.com"
