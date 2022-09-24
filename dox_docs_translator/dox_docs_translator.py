@@ -19,7 +19,7 @@
 # ############################################################################ #
 
 from googletrans import Translator
-from tags import *
+from .tags import *
 
 
 class DoxDocsTranslator:
