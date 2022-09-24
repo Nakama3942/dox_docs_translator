@@ -25,7 +25,7 @@ with open("README.md", "r", encoding='utf-8') as readme_file:
 
 setup(
     name="dox_docs_translator",
-    version="0.1.0",
+    version="0.1.0-fix",
 
     author="Kalynovsky 'Nakama3942' Valentin",
     author_email="nakama3942@gmail.com",
@@ -34,11 +34,11 @@ setup(
     long_description=readme,
     long_description_content_type="text/markdown",
 
-    url="https://github.com/Nakama3942/Dox-docs_Translator",
+    url="https://github.com/Nakama3942/dox_docs_translator",
 
     license="Apache License, Version 2.0, see LICENSE file",
 
-    packages=['Dox-docs_Translator'],
+    packages=['dox_docs_translator'],
     install_requires=['googletrans==4.0.0-rc1'],
     classifiers=[
         "License :: OSI Approved :: Apache Software License",
