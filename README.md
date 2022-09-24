@@ -56,7 +56,7 @@ The full text of the license can be found at the following [link](https://github
 ## Usage
 To install the library, you need to execute the command:
 ```sh
-pip install dox_docs_translator
+pip install dox-docs-translator
 ```
 Installing the <i>dox_docs_translator</i> library should also install <i>googletrans</i>, but if the <i>googletrans</i> library is not installed or this script doesn't work, you need to install/reinstall the <i>googletrans</i>:
 ```sh
