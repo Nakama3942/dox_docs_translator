@@ -22,5 +22,5 @@ from .dox_docs_translator import *
 from .tags import *
 
 __authot__ = "Kalynovsky 'Nakama3942' Valentin"
-__version__ = "0.1.0-rc1"
+__version__ = "0.1.1"
 __email__ = "nakama3942@gmail.com"

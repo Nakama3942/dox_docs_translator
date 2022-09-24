@@ -25,7 +25,7 @@ with open("README.md", "r", encoding='utf-8') as readme_file:
 
 setup(
     name="dox_docs_translator",
-    version="0.1.0-rc1",
+    version="0.1.1",
 
     author="Kalynovsky 'Nakama3942' Valentin",
     author_email="nakama3942@gmail.com",
